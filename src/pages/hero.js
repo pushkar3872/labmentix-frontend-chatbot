@@ -1,18 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, User, Bot, X, FileText, Image, File, Loader2, Plus, Menu, Sparkles, MessageCircle } from 'lucide-react';
+import { Send, Paperclip, User, Bot, X, FileText, Image, File, Loader2, Plus, Menu, Sparkles, MessageCircle, Beaker } from 'lucide-react';
 
 export default function Hero() {
   const [messages, setMessages] = useState([
     {
       id: 1,
       type: 'assistant',
-      content: 'Hello! I\'m your AI assistant. How can I help you today? ✨',
+      content: 'Hello! I\'m your AI laboratory assistant. How can I help you with your research today? ✨',
       timestamp: new Date()
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const textareaRef = useRef(null);
@@ -56,9 +57,9 @@ export default function Hero() {
   };
 
   const getFileIcon = (fileType) => {
-    if (fileType.startsWith('image/')) return <Image className="w-4 h-4 text-rose-500" />;
-    if (fileType.includes('text') || fileType.includes('document')) return <FileText className="w-4 h-4 text-blue-500" />;
-    return <File className="w-4 h-4 text-indigo-500" />;
+    if (fileType.startsWith('image/')) return <Image className="w-4 h-4 text-cyan-400" />;
+    if (fileType.includes('text') || fileType.includes('document')) return <FileText className="w-4 h-4 text-indigo-400" />;
+    return <File className="w-4 h-4 text-purple-400" />;
   };
 
   const formatFileSize = (bytes) => {
@@ -69,33 +70,33 @@ export default function Hero() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  // Simulate API call
-  const callAPI = async (message, files) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-    
-    // Mock response based on input
-    const responses = [
-      "That's an interesting question! Let me help you with that. 🎯",
-      "I understand what you're asking. Here's my thoughts on this topic... 💭",
-      "Based on your message, I can provide some insights. ✨",
-      "Great question! This is something I can definitely help you explore. 🚀",
-      "I see what you're getting at. Let me break this down for you. 📊"
-    ];
-    
-    let response = responses[Math.floor(Math.random() * responses.length)];
-    
-    if (files.length > 0) {
-      response += ` I can see you've uploaded ${files.length} file${files.length > 1 ? 's' : ''}. I'll analyze ${files.map(f => f.name).join(', ')} for you. 📄`;
+  // Backend API call function
+  const callBackendAPI = async (message) => {
+    if (!message.trim()) {
+      throw new Error('Please enter a message');
     }
-    
-    return response;
+
+    const res = await fetch('http://localhost:5000/callapi', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ mymsg: message }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    return data || { reply: 'No response from backend.' };
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+  const handleSubmit = async () => {
     if (!inputValue.trim() && uploadedFiles.length === 0) return;
+
+    // Clear any previous errors
+    setError(null);
 
     const userMessage = {
       id: Date.now(),
@@ -115,21 +116,25 @@ export default function Hero() {
     setUploadedFiles([]);
 
     try {
-      const response = await callAPI(currentInput, currentFiles);
+      // Call the actual backend API
+      const response = await callBackendAPI(currentInput);
       
       const assistantMessage = {
         id: Date.now() + 1,
         type: 'assistant',
-        content: response,
+        content: response.reply || response.message || 'No response from backend.',
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
+      console.error('API Error:', error);
+      setError('Failed to send message: ' + error.message);
+      
       const errorMessage = {
         id: Date.now() + 1,
         type: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again. 😔',
+        content: 'Sorry, I encountered an error. Please try again. 😔\nError: ' + error.message,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -141,125 +146,153 @@ export default function Hero() {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e);
+      handleSubmit();
     }
   };
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-rose-50 via-white to-blue-50">
+    <div className="flex h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 overflow-hidden relative">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '4s'}}></div>
+      </div>
+
+      {/* Floating Scientific Elements */}
+      <div className="absolute top-20 left-10 animate-bounce" style={{animationDelay: '0s'}}>
+        <div className="w-4 h-4 bg-indigo-400 rounded-full opacity-60"></div>
+      </div>
+      <div className="absolute top-40 right-20 animate-bounce" style={{animationDelay: '1s'}}>
+        <div className="w-3 h-3 bg-cyan-400 rounded-full opacity-60"></div>
+      </div>
+      <div className="absolute bottom-32 left-20 animate-bounce" style={{animationDelay: '2s'}}>
+        <div className="w-5 h-5 bg-purple-400 rounded-full opacity-60"></div>
+      </div>
+      <div className="absolute bottom-20 right-10 animate-bounce" style={{animationDelay: '3s'}}>
+        <div className="w-4 h-4 bg-emerald-400 rounded-full opacity-60"></div>
+      </div>
+
       {/* Sidebar */}
-      <div className="hidden md:flex w-72 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white flex-col shadow-2xl border-r border-slate-700">
-        <div className="p-6 border-b border-slate-700">
+      <div className="hidden md:flex w-72 bg-white/5 backdrop-blur-xl text-white flex-col shadow-2xl border-r border-white/10 relative z-10">
+        <div className="p-6 border-b border-white/10">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-r from-rose-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
-              <Sparkles className="w-5 h-5 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-2xl animate-pulse">
+              <Beaker className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="font-bold text-lg bg-gradient-to-r from-rose-400 to-blue-400 bg-clip-text text-transparent">
-                AI Chat
+              <h2 className="font-bold text-lg bg-gradient-to-r from-white via-indigo-200 to-cyan-200 bg-clip-text text-transparent">
+                Labmentix AI
               </h2>
-              <p className="text-xs text-slate-400">Powered by AI</p>
+              <p className="text-xs text-gray-400">Laboratory Assistant</p>
             </div>
           </div>
           
-          <button className="flex items-center gap-3 w-full p-4 rounded-xl bg-gradient-to-r from-rose-600/20 to-blue-600/20 hover:from-rose-600/30 hover:to-blue-600/30 transition-all duration-300 border border-rose-500/20 hover:border-rose-500/40 shadow-lg">
-            <Plus className="w-5 h-5 text-rose-400" />
-            <span className="font-medium">New Conversation</span>
+          <button className="flex items-center gap-3 w-full p-4 rounded-2xl bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 border border-white/20 hover:border-indigo-400/50 shadow-lg group">
+            <Plus className="w-5 h-5 text-indigo-400 group-hover:rotate-90 transition-transform duration-300" />
+            <span className="font-medium text-gray-300">New Conversation</span>
           </button>
         </div>
         
         <div className="flex-1 p-6">
-          <h3 className="text-sm font-semibold text-slate-400 mb-4 uppercase tracking-wider">Recent Chats</h3>
+          <h3 className="text-sm font-semibold text-gray-400 mb-4 uppercase tracking-wider">Recent Sessions</h3>
           <div className="space-y-3">
-            <div className="group p-3 rounded-xl hover:bg-slate-800/50 cursor-pointer transition-all duration-200 border border-transparent hover:border-slate-700">
-              <div className="flex items-center gap-3">
-                <MessageCircle className="w-4 h-4 text-blue-400 group-hover:text-blue-300" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-300 truncate">AI Development Tips</p>
-                  <p className="text-xs text-slate-500">2 hours ago</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="group p-3 rounded-xl hover:bg-slate-800/50 cursor-pointer transition-all duration-200 border border-transparent hover:border-slate-700">
-              <div className="flex items-center gap-3">
-                <MessageCircle className="w-4 h-4 text-rose-400 group-hover:text-rose-300" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-300 truncate">Code Review Help</p>
-                  <p className="text-xs text-slate-500">Yesterday</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="group p-3 rounded-xl hover:bg-slate-800/50 cursor-pointer transition-all duration-200 border border-transparent hover:border-slate-700">
+            <div className="group p-3 rounded-2xl hover:bg-white/5 cursor-pointer transition-all duration-200 border border-transparent hover:border-white/20">
               <div className="flex items-center gap-3">
                 <MessageCircle className="w-4 h-4 text-indigo-400 group-hover:text-indigo-300" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-300 truncate">Design System Ideas</p>
-                  <p className="text-xs text-slate-500">3 days ago</p>
+                  <p className="text-sm font-medium text-gray-300 truncate">Protein Analysis</p>
+                  <p className="text-xs text-gray-500">2 hours ago</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="group p-3 rounded-2xl hover:bg-white/5 cursor-pointer transition-all duration-200 border border-transparent hover:border-white/20">
+              <div className="flex items-center gap-3">
+                <MessageCircle className="w-4 h-4 text-cyan-400 group-hover:text-cyan-300" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-300 truncate">Chemical Synthesis</p>
+                  <p className="text-xs text-gray-500">Yesterday</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="group p-3 rounded-2xl hover:bg-white/5 cursor-pointer transition-all duration-200 border border-transparent hover:border-white/20">
+              <div className="flex items-center gap-3">
+                <MessageCircle className="w-4 h-4 text-purple-400 group-hover:text-purple-300" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-300 truncate">Lab Equipment Setup</p>
+                  <p className="text-xs text-gray-500">3 days ago</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
         
-        <div className="p-6 border-t border-slate-700">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-800/50">
-            <div className="w-8 h-8 bg-gradient-to-r from-rose-500 to-blue-500 rounded-full flex items-center justify-center">
+        <div className="p-6 border-t border-white/10">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 backdrop-blur-sm">
+            <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full flex items-center justify-center">
               <User className="w-4 h-4 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-slate-300">User Account</p>
-              <p className="text-xs text-slate-500">Free Plan</p>
+              <p className="text-sm font-medium text-gray-300">Researcher</p>
+              <p className="text-xs text-gray-500">Premium Access</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col backdrop-blur-sm">
+      <div className="flex-1 flex flex-col relative z-10">
         {/* Header */}
-        <div className="bg-white/80 backdrop-blur-xl border-b border-rose-100/50 p-6 shadow-sm">
+        <div className="bg-white/5 backdrop-blur-xl border-b border-white/10 p-6 shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button className="md:hidden p-2 rounded-xl bg-gradient-to-r from-rose-500 to-blue-500 text-white shadow-lg">
+              <button className="md:hidden p-2 rounded-2xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white shadow-lg">
                 <Menu className="w-5 h-5" />
               </button>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-rose-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg animate-pulse">
+                <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-2xl animate-pulse">
                   <Bot className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-rose-600 to-blue-600 bg-clip-text text-transparent">
-                    AI Assistant
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-white via-indigo-200 to-cyan-200 bg-clip-text text-transparent">
+                    Laboratory Assistant
                   </h1>
-                  <p className="text-sm text-slate-500">Always here to help ✨</p>
+                  <p className="text-sm text-gray-400">Advanced AI for scientific research ✨</p>
                 </div>
               </div>
             </div>
             
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-400 rounded-full shadow-sm animate-pulse"></div>
-              <span className="text-sm text-slate-600 font-medium">Online</span>
+              <div className="w-3 h-3 bg-emerald-400 rounded-full shadow-sm animate-pulse"></div>
+              <span className="text-sm text-gray-300 font-medium">Online</span>
             </div>
           </div>
         </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="mx-6 mt-4 p-4 bg-red-500/10 border border-red-400/20 rounded-2xl backdrop-blur-sm">
+            <p className="text-red-400 text-sm">{error}</p>
+          </div>
+        )}
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-8">
           {messages.map((message) => (
             <div key={message.id} className={`flex gap-4 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
               {message.type === 'assistant' && (
-                <div className="w-10 h-10 bg-gradient-to-r from-rose-500 to-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
                   <Bot className="w-5 h-5 text-white" />
                 </div>
               )}
               
               <div className={`max-w-2xl ${message.type === 'user' ? 'order-1' : ''}`}>
-                <div className={`rounded-3xl p-6 shadow-lg ${
+                <div className={`rounded-3xl p-6 shadow-lg border ${
                   message.type === 'user' 
-                    ? 'bg-gradient-to-r from-rose-500 to-blue-500 text-white ml-auto transform hover:scale-105 transition-all duration-200' 
-                    : 'bg-white/90 backdrop-blur-sm border border-rose-100/50 hover:shadow-xl transition-all duration-200'
+                    ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white ml-auto transform hover:scale-105 transition-all duration-200 border-indigo-400/20' 
+                    : 'bg-white/5 backdrop-blur-xl border-white/10 hover:bg-white/10 transition-all duration-200 text-white'
                 }`}>
                   {message.files && message.files.length > 0 && (
                     <div className="mb-4 space-y-3">
@@ -267,17 +300,17 @@ export default function Hero() {
                         <div key={file.id} className={`flex items-center gap-3 p-3 rounded-2xl ${
                           message.type === 'user' 
                             ? 'bg-white/20 backdrop-blur-sm' 
-                            : 'bg-gradient-to-r from-rose-50 to-blue-50 border border-rose-100'
+                            : 'bg-white/5 backdrop-blur-sm border border-white/10'
                         }`}>
                           {getFileIcon(file.type)}
                           <div className="flex-1 min-w-0">
                             <p className={`text-sm font-semibold truncate ${
-                              message.type === 'user' ? 'text-white' : 'text-slate-700'
+                              message.type === 'user' ? 'text-white' : 'text-gray-300'
                             }`}>
                               {file.name}
                             </p>
                             <p className={`text-xs ${
-                              message.type === 'user' ? 'text-white/70' : 'text-slate-500'
+                              message.type === 'user' ? 'text-white/70' : 'text-gray-500'
                             }`}>
                               {formatFileSize(file.size)}
                             </p>
@@ -287,14 +320,14 @@ export default function Hero() {
                     </div>
                   )}
                   
-                  <p className={`leading-relaxed ${
-                    message.type === 'assistant' ? 'text-slate-700' : 'text-white'
+                  <p className={`leading-relaxed whitespace-pre-wrap ${
+                    message.type === 'assistant' ? 'text-gray-300' : 'text-white'
                   }`}>
                     {message.content}
                   </p>
                 </div>
                 
-                <div className={`text-xs text-slate-500 mt-2 px-2 ${message.type === 'user' ? 'text-right' : ''}`}>
+                <div className={`text-xs text-gray-500 mt-2 px-2 ${message.type === 'user' ? 'text-right' : ''}`}>
                   {message.timestamp.toLocaleTimeString()}
                 </div>
               </div>
@@ -309,17 +342,17 @@ export default function Hero() {
 
           {isLoading && (
             <div className="flex gap-4 justify-start">
-              <div className="w-10 h-10 bg-gradient-to-r from-rose-500 to-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
                 <Bot className="w-5 h-5 text-white" />
               </div>
-              <div className="bg-white/90 backdrop-blur-sm border border-rose-100/50 rounded-3xl p-6 shadow-lg">
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-lg">
                 <div className="flex items-center gap-3">
                   <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-gradient-to-r from-rose-500 to-blue-500 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-gradient-to-r from-rose-500 to-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2 h-2 bg-gradient-to-r from-rose-500 to-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2 h-2 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                   </div>
-                  <span className="text-slate-600 font-medium">AI is thinking...</span>
+                  <span className="text-gray-300 font-medium">AI is analyzing...</span>
                 </div>
               </div>
             </div>
@@ -329,20 +362,20 @@ export default function Hero() {
         </div>
 
         {/* Input Area */}
-        <div className="bg-white/80 backdrop-blur-xl border-t border-rose-100/50 p-6">
+        <div className="bg-white/5 backdrop-blur-xl border-t border-white/10 p-6">
           {/* File Preview */}
           {uploadedFiles.length > 0 && (
             <div className="mb-6 flex flex-wrap gap-3">
               {uploadedFiles.map((file) => (
-                <div key={file.id} className="flex items-center gap-3 bg-gradient-to-r from-rose-50 to-blue-50 rounded-2xl p-3 border border-rose-200/50 shadow-sm hover:shadow-md transition-all duration-200">
+                <div key={file.id} className="flex items-center gap-3 bg-white/5 backdrop-blur-sm rounded-2xl p-3 border border-white/20 shadow-sm hover:bg-white/10 transition-all duration-200">
                   {getFileIcon(file.type)}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-slate-700 truncate">{file.name}</p>
-                    <p className="text-xs text-slate-500">({formatFileSize(file.size)})</p>
+                    <p className="text-sm font-semibold text-gray-300 truncate">{file.name}</p>
+                    <p className="text-xs text-gray-500">({formatFileSize(file.size)})</p>
                   </div>
                   <button 
                     onClick={() => removeFile(file.id)}
-                    className="ml-2 p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200"
+                    className="ml-2 p-1 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -353,21 +386,23 @@ export default function Hero() {
 
           <div className="flex items-end gap-4">
             <div className="flex-1 relative">
-              <div className="relative bg-white rounded-3xl shadow-lg border border-rose-200/50 hover:border-rose-300/50 transition-all duration-200">
+              <div className="relative bg-white/5 backdrop-blur-xl rounded-3xl shadow-lg border border-white/20 hover:border-indigo-400/50 transition-all duration-200">
                 <textarea
                   ref={textareaRef}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Type your message here... ✨"
-                  className="w-full p-6 pr-16 rounded-3xl resize-none focus:outline-none focus:ring-2 focus:ring-rose-400/50 bg-transparent text-slate-700 placeholder-slate-400 min-h-[64px] max-h-[200px]"
+                  placeholder="Ask me about your research, lab procedures, or data analysis... ✨"
+                  className="w-full p-6 pr-16 rounded-3xl resize-none focus:outline-none focus:ring-2 focus:ring-indigo-400/50 bg-transparent text-white placeholder-gray-400 min-h-[64px] max-h-[200px]"
                   rows={1}
+                  disabled={isLoading}
                 />
                 
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute right-4 bottom-4 p-3 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-2xl transition-all duration-200"
+                  className="absolute right-4 bottom-4 p-3 text-gray-400 hover:text-gray-300 hover:bg-white/5 rounded-2xl transition-all duration-200"
+                  disabled={isLoading}
                 >
                   <Paperclip className="w-5 h-5" />
                 </button>
@@ -377,7 +412,7 @@ export default function Hero() {
             <button
               onClick={handleSubmit}
               disabled={(!inputValue.trim() && uploadedFiles.length === 0) || isLoading}
-              className="p-4 bg-gradient-to-r from-rose-500 to-blue-500 text-white rounded-2xl hover:from-rose-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="p-4 bg-gradient-to-r from-indigo-600 to-cyan-600 text-white rounded-2xl hover:from-indigo-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100"
             >
               {isLoading ? (
                 <Loader2 className="w-6 h-6 animate-spin" />
@@ -396,13 +431,13 @@ export default function Hero() {
             />
           </div>
           
-          <div className="flex items-center justify-center gap-6 mt-4 text-xs text-slate-500">
+          <div className="flex items-center justify-center gap-6 mt-4 text-xs text-gray-500">
             <span className="flex items-center gap-2">
-              <kbd className="px-2 py-1 bg-slate-100 rounded-lg font-mono text-xs">Enter</kbd>
+              <kbd className="px-2 py-1 bg-white/5 backdrop-blur-sm rounded-lg font-mono text-xs border border-white/20">Enter</kbd>
               to send
             </span>
             <span className="flex items-center gap-2">
-              <kbd className="px-2 py-1 bg-slate-100 rounded-lg font-mono text-xs">Shift + Enter</kbd>
+              <kbd className="px-2 py-1 bg-white/5 backdrop-blur-sm rounded-lg font-mono text-xs border border-white/20">Shift + Enter</kbd>
               for new line
             </span>
           </div>

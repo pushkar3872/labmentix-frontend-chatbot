@@ -11,7 +11,8 @@ export default function Nav() {
     { href: '/', label: 'Home', icon: Home },
     { href: '/signin', label: 'Sign In', icon: LogIn },
     { href: '/signup', label: 'Sign Up', icon: UserPlus },
-    { href: '/hero', label: 'Hero Section', icon: Zap },
+    { href: '/hero', label: 'Ai Chatbot', icon: Zap },
+    // { href: '/demy', label: 'Demo ', icon: Zap },
   ];
 
   return (

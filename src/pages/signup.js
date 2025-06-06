@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, EyeOff, User, Mail, Lock, Sparkles, Check, AlertCircle, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, Lock, Sparkles, Check, AlertCircle, Loader2, Beaker } from 'lucide-react';
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -91,10 +91,10 @@ export default function SignUp() {
     if (/\d/.test(password)) score++;
     if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
     
-    if (score < 2) return { strength: 25, label: 'Weak', color: 'bg-red-500' };
-    if (score < 4) return { strength: 50, label: 'Fair', color: 'bg-yellow-500' };
-    if (score < 5) return { strength: 75, label: 'Good', color: 'bg-blue-500' };
-    return { strength: 100, label: 'Strong', color: 'bg-green-500' };
+    if (score < 2) return { strength: 25, label: 'Weak', color: 'bg-red-400' };
+    if (score < 4) return { strength: 50, label: 'Fair', color: 'bg-yellow-400' };
+    if (score < 5) return { strength: 75, label: 'Good', color: 'bg-indigo-400' };
+    return { strength: 100, label: 'Strong', color: 'bg-emerald-400' };
   };
 
   const passwordStrength = getPasswordStrength(formData.password);
@@ -102,30 +102,51 @@ export default function SignUp() {
                      Object.values(formData).every(value => value.trim());
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-white to-blue-50 p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 p-4 overflow-hidden relative">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '4s'}}></div>
+      </div>
+
+      {/* Floating Scientific Elements */}
+      <div className="absolute top-20 left-10 animate-bounce" style={{animationDelay: '0s'}}>
+        <div className="w-4 h-4 bg-indigo-400 rounded-full opacity-60"></div>
+      </div>
+      <div className="absolute top-40 right-20 animate-bounce" style={{animationDelay: '1s'}}>
+        <div className="w-3 h-3 bg-cyan-400 rounded-full opacity-60"></div>
+      </div>
+      <div className="absolute bottom-32 left-20 animate-bounce" style={{animationDelay: '2s'}}>
+        <div className="w-5 h-5 bg-purple-400 rounded-full opacity-60"></div>
+      </div>
+      <div className="absolute bottom-20 right-10 animate-bounce" style={{animationDelay: '3s'}}>
+        <div className="w-4 h-4 bg-emerald-400 rounded-full opacity-60"></div>
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-rose-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg animate-pulse">
-            <Sparkles className="w-8 h-8 text-white" />
+          <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl animate-pulse">
+            <Beaker className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-rose-600 to-blue-600 bg-clip-text text-transparent mb-2">
-            Create Account
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-indigo-200 to-cyan-200 bg-clip-text text-transparent mb-2">
+            Join Labmentix
           </h1>
-          <p className="text-slate-600">Join us and start your AI journey ✨</p>
+          <p className="text-gray-300">Create your laboratory research account</p>
         </div>
 
         {/* Form */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-rose-100/50 p-8">
+        <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/10 p-8">
           <div className="space-y-6">
             {/* Name Field */}
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-300 mb-2">
                 Full Name
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <User className="w-5 h-5 text-slate-400" />
+                  <User className="w-5 h-5 text-gray-400" />
                 </div>
                 <input
                   type="text"
@@ -134,22 +155,22 @@ export default function SignUp() {
                   onChange={handleInputChange}
                   onBlur={handleBlur}
                   placeholder="Enter your full name"
-                  className={`w-full pl-12 pr-4 py-4 rounded-2xl border-2 transition-all duration-200 focus:outline-none bg-white/50 backdrop-blur-sm ${
+                  className={`w-full pl-12 pr-4 py-4 rounded-2xl border-2 transition-all duration-200 focus:outline-none bg-white/5 backdrop-blur-sm text-white placeholder-gray-400 ${
                     errors.name 
-                      ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
+                      ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-400/20' 
                       : touched.name && !errors.name
-                      ? 'border-green-300 focus:border-green-500 focus:ring-2 focus:ring-green-200'
-                      : 'border-slate-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200'
+                      ? 'border-emerald-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-400/20'
+                      : 'border-white/20 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20'
                   }`}
                 />
                 {touched.name && !errors.name && (
                   <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-emerald-400" />
                   </div>
                 )}
               </div>
               {errors.name && (
-                <div className="flex items-center gap-2 mt-2 text-red-600">
+                <div className="flex items-center gap-2 mt-2 text-red-400">
                   <AlertCircle className="w-4 h-4" />
                   <span className="text-sm">{errors.name}</span>
                 </div>
@@ -158,12 +179,12 @@ export default function SignUp() {
 
             {/* Email Field */}
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-300 mb-2">
                 Email Address
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="w-5 h-5 text-slate-400" />
+                  <Mail className="w-5 h-5 text-gray-400" />
                 </div>
                 <input
                   type="email"
@@ -172,22 +193,22 @@ export default function SignUp() {
                   onChange={handleInputChange}
                   onBlur={handleBlur}
                   placeholder="Enter your email"
-                  className={`w-full pl-12 pr-4 py-4 rounded-2xl border-2 transition-all duration-200 focus:outline-none bg-white/50 backdrop-blur-sm ${
+                  className={`w-full pl-12 pr-4 py-4 rounded-2xl border-2 transition-all duration-200 focus:outline-none bg-white/5 backdrop-blur-sm text-white placeholder-gray-400 ${
                     errors.email 
-                      ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
+                      ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-400/20' 
                       : touched.email && !errors.email
-                      ? 'border-green-300 focus:border-green-500 focus:ring-2 focus:ring-green-200'
-                      : 'border-slate-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200'
+                      ? 'border-emerald-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-400/20'
+                      : 'border-white/20 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20'
                   }`}
                 />
                 {touched.email && !errors.email && (
                   <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
-                    <Check className="w-5 h-5 text-green-500" />
+                    <Check className="w-5 h-5 text-emerald-400" />
                   </div>
                 )}
               </div>
               {errors.email && (
-                <div className="flex items-center gap-2 mt-2 text-red-600">
+                <div className="flex items-center gap-2 mt-2 text-red-400">
                   <AlertCircle className="w-4 h-4" />
                   <span className="text-sm">{errors.email}</span>
                 </div>
@@ -196,12 +217,12 @@ export default function SignUp() {
 
             {/* Password Field */}
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-300 mb-2">
                 Password
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="w-5 h-5 text-slate-400" />
+                  <Lock className="w-5 h-5 text-gray-400" />
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -210,18 +231,18 @@ export default function SignUp() {
                   onChange={handleInputChange}
                   onBlur={handleBlur}
                   placeholder="Create a strong password"
-                  className={`w-full pl-12 pr-12 py-4 rounded-2xl border-2 transition-all duration-200 focus:outline-none bg-white/50 backdrop-blur-sm ${
+                  className={`w-full pl-12 pr-12 py-4 rounded-2xl border-2 transition-all duration-200 focus:outline-none bg-white/5 backdrop-blur-sm text-white placeholder-gray-400 ${
                     errors.password 
-                      ? 'border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
+                      ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-400/20' 
                       : touched.password && !errors.password
-                      ? 'border-green-300 focus:border-green-500 focus:ring-2 focus:ring-green-200'
-                      : 'border-slate-200 focus:border-rose-400 focus:ring-2 focus:ring-rose-200'
+                      ? 'border-emerald-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-400/20'
+                      : 'border-white/20 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20'
                   }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors duration-200"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-300 transition-colors duration-200"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -231,16 +252,16 @@ export default function SignUp() {
               {formData.password && (
                 <div className="mt-3">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-medium text-slate-600">Password Strength</span>
+                    <span className="text-xs font-medium text-gray-400">Password Strength</span>
                     <span className={`text-xs font-semibold ${
-                      passwordStrength.color === 'bg-red-500' ? 'text-red-600' :
-                      passwordStrength.color === 'bg-yellow-500' ? 'text-yellow-600' :
-                      passwordStrength.color === 'bg-blue-500' ? 'text-blue-600' : 'text-green-600'
+                      passwordStrength.color === 'bg-red-400' ? 'text-red-400' :
+                      passwordStrength.color === 'bg-yellow-400' ? 'text-yellow-400' :
+                      passwordStrength.color === 'bg-indigo-400' ? 'text-indigo-400' : 'text-emerald-400'
                     }`}>
                       {passwordStrength.label}
                     </span>
                   </div>
-                  <div className="w-full bg-slate-200 rounded-full h-2">
+                  <div className="w-full bg-white/10 rounded-full h-2">
                     <div 
                       className={`h-2 rounded-full transition-all duration-300 ${passwordStrength.color}`}
                       style={{ width: `${passwordStrength.strength}%` }}
@@ -250,7 +271,7 @@ export default function SignUp() {
               )}
               
               {errors.password && (
-                <div className="flex items-center gap-2 mt-2 text-red-600">
+                <div className="flex items-center gap-2 mt-2 text-red-400">
                   <AlertCircle className="w-4 h-4" />
                   <span className="text-sm">{errors.password}</span>
                 </div>
@@ -261,7 +282,7 @@ export default function SignUp() {
             <button
               type="submit"
               disabled={!isFormValid || isLoading}
-              className="w-full py-4 bg-gradient-to-r from-rose-500 to-blue-500 text-white font-semibold rounded-2xl hover:from-rose-600 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100"
+              className="group relative w-full py-4 bg-gradient-to-r from-indigo-600 to-cyan-600 text-white font-semibold rounded-2xl hover:from-indigo-700 hover:to-cyan-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-3 shadow-2xl hover:shadow-indigo-500/25 transform hover:scale-105 disabled:hover:scale-100"
             >
               {isLoading ? (
                 <>
@@ -270,18 +291,19 @@ export default function SignUp() {
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-5 h-5" />
+                  <Beaker className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
                   Create Account
                 </>
               )}
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-300"></div>
             </button>
           </div>
 
           {/* Footer */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-gray-400">
               Already have an account?{' '}
-              <button className="font-semibold text-transparent bg-gradient-to-r from-rose-600 to-blue-600 bg-clip-text hover:from-rose-700 hover:to-blue-700 transition-all duration-200">
+              <button className="font-semibold text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text hover:from-indigo-300 hover:to-cyan-300 transition-all duration-200">
                 Sign In
               </button>
             </p>
@@ -290,13 +312,13 @@ export default function SignUp() {
 
         {/* Additional Info */}
         <div className="mt-6 text-center">
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-gray-500">
             By creating an account, you agree to our{' '}
-            <button className="underline hover:text-slate-700 transition-colors duration-200">
+            <button className="underline hover:text-gray-400 transition-colors duration-200">
               Terms of Service
             </button>{' '}
             and{' '}
-            <button className="underline hover:text-slate-700 transition-colors duration-200">
+            <button className="underline hover:text-gray-400 transition-colors duration-200">
               Privacy Policy
             </button>
           </p>
