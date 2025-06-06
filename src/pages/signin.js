@@ -30,7 +30,7 @@ export default function SignIn() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     if (touched[name]) {
       const error = validateField(name, value);
       setErrors(prev => ({ ...prev, [name]: error }));
@@ -46,22 +46,20 @@ export default function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validate all fields
+
     const newErrors = {};
     Object.keys(formData).forEach(key => {
       const error = validateField(key, formData[key]);
       if (error) newErrors[key] = error;
     });
-    
+
     setErrors(newErrors);
     setTouched({ email: true, password: true });
-    
+
     if (Object.keys(newErrors).length > 0) return;
-    
+
     setIsLoading(true);
-    
-    // Simulate API call
+
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
       alert('Welcome back! 🎉');
@@ -74,8 +72,8 @@ export default function SignIn() {
     }
   };
 
-  const isFormValid = Object.values(errors).every(error => !error) && 
-                     Object.values(formData).every(value => value.trim());
+  const isFormValid = Object.values(errors).every(error => !error) &&
+    Object.values(formData).every(value => value.trim());
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-white to-blue-50 p-4">
@@ -92,7 +90,7 @@ export default function SignIn() {
         </div>
 
         {/* Form */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-rose-100/50 p-8">
+        <form onSubmit={handleSubmit} className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-rose-100/50 p-8">
           <div className="space-y-6">
             {/* Email Field */}
             <div>
@@ -205,13 +203,13 @@ export default function SignIn() {
           {/* Footer */}
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-600">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <button className="font-semibold text-transparent bg-gradient-to-r from-rose-600 to-blue-600 bg-clip-text hover:from-rose-700 hover:to-blue-700 transition-all duration-200">
                 Create Account
               </button>
             </p>
           </div>
-        </div>
+        </form>
 
         {/* Additional Info */}
         <div className="mt-6 text-center">
