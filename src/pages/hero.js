@@ -76,13 +76,13 @@ export default function Hero() {
       throw new Error('Please enter a message');
     }
 
-    const res = await fetch('http://localhost:5000/callapi', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/callapi`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mymsg: message }),
     });
+
+
 
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
