@@ -74,7 +74,7 @@ export default function Hero() {
   // Save message to backend
   const saveMessageToDB = async (message) => {
     try {
-      await fetch('http://localhost:5003/savemessage', {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/savemessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -95,7 +95,7 @@ export default function Hero() {
       throw new Error('Please enter a message');
     }
 
-    const res = await fetch('http://localhost:5003/callapi', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/callapi`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mymsg: message }),

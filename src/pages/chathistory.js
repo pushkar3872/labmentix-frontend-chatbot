@@ -6,7 +6,7 @@ export default function ChatHistory() {
 
   useEffect(() => {
     // Fetch chat history from your backend API
-    fetch("http://localhost:5003/getchathistory")
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/getchathistory`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch chat history");
         return res.json();

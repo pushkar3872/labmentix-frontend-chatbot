@@ -70,7 +70,7 @@ export default function SignUp() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5003/callsignup", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/callsignup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

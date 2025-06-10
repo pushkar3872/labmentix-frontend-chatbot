@@ -7,7 +7,7 @@ export default function SimpleLogin() {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    
+
     if (!email || !password) {
       setMessage('Please fill in both fields.');
       return;
@@ -17,7 +17,7 @@ export default function SimpleLogin() {
     setMessage('');
 
     try {
-      const res = await fetch('http://localhost:5003/callsignin', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/callsignin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

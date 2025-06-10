@@ -16,7 +16,7 @@ export default function Demo() {
       setError(null);
       setLoading(true);
 
-      const res = await fetch('http://localhost:5000/callapi', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/callapi`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

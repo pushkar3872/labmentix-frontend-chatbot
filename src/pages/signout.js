@@ -10,7 +10,7 @@ export default function SignOut() {
   const handleSignOut = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5003/callsignout", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/callsignout`, {
         method: "POST",
         credentials: "include",
         headers: {
