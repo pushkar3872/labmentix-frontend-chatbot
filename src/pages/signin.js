@@ -214,15 +214,15 @@ export default function SignIn() {
 
           {/* Footer */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-400">
-              Don't have an account?{' '}
-              <button 
-                type="button"
-                className="font-semibold text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text hover:from-indigo-300 hover:to-cyan-300 transition-all duration-200"
-              >
-                Sign Up
-              </button>
-            </p>
+           <p className="text-sm text-gray-400">
+          Don&apos;t have an account?{' '}
+          <button 
+            type="button"
+            className="font-semibold text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text hover:from-indigo-300 hover:to-cyan-300 transition-all duration-200"
+          >
+            Sign Up
+          </button>
+        </p>
           </div>
         </form>
 
