@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, Sparkles, Check, AlertCircle, Loader2, LogIn, Beaker } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Check, AlertCircle, Loader2, LogIn, Beaker } from 'lucide-react';
 import { useAuthStore } from '../store/auth';
 import toast from 'react-hot-toast';
 
@@ -72,7 +72,13 @@ export default function SignIn() {
         body: JSON.stringify(formData)
       });
 
-      const data = await res.json();
+      const contentType = res.headers.get('content-type');
+      let data;
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        data = { message: await res.text() };
+      }
 
       if (res.ok && data.token) {
         setAuthenticated(true);
@@ -84,7 +90,7 @@ export default function SignIn() {
       } else {
         setAuthenticated(false);
         setToken(null);
-        toast.error('Login failed, Try again!');
+        toast.error(data.message || 'Login failed, Try again!');
       }
     } catch (error) {
       setAuthenticated(false);
@@ -214,15 +220,15 @@ export default function SignIn() {
 
           {/* Footer */}
           <div className="mt-6 text-center">
-           <p className="text-sm text-gray-400">
-          Don&apos;t have an account?{' '}
-          <button 
-            type="button"
-            className="font-semibold text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text hover:from-indigo-300 hover:to-cyan-300 transition-all duration-200"
-          >
-            Sign Up
-          </button>
-        </p>
+            <p className="text-sm text-gray-400">
+              Don&apos;t have an account?{' '}
+              <button 
+                type="button"
+                className="font-semibold text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text hover:from-indigo-300 hover:to-cyan-300 transition-all duration-200"
+              >
+                Sign Up
+              </button>
+            </p>
           </div>
         </form>
 

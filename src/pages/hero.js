@@ -57,10 +57,11 @@ export default function Hero() {
     setUploadedFiles(prev => prev.filter(file => file.id !== fileId));
   };
 
+  // Updated: Add aria-label for accessibility instead of alt (SVG icon)
   const getFileIcon = (fileType) => {
-    if (fileType.startsWith('image/')) return <Image className="w-3 h-3 sm:w-4 sm:h-4 text-cyan-400" />;
-    if (fileType.includes('text') || fileType.includes('document')) return <FileText className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-400" />;
-    return <File className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400" />;
+    if (fileType.startsWith('image/')) return <Image className="w-3 h-3 sm:w-4 sm:h-4 text-cyan-400" aria-label="Image file" />;
+    if (fileType.includes('text') || fileType.includes('document')) return <FileText className="w-3 h-3 sm:w-4 sm:h-4 text-indigo-400" aria-label="Text file" />;
+    return <File className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400" aria-label="Generic file" />;
   };
 
   const formatFileSize = (bytes) => {
@@ -208,7 +209,6 @@ export default function Hero() {
         sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       } ${sidebarOpen ? 'flex' : 'hidden lg:flex'}`}>
         {/* ...sidebar code unchanged... */}
-        {/* (Keep your sidebar code here as in your original file) */}
         <div className="p-3 sm:p-4 lg:p-6 border-b border-white/10">
           <div className="flex items-center justify-between lg:justify-start gap-2 sm:gap-3 mb-3 sm:mb-4 lg:mb-6">
             <div className="flex items-center gap-2 sm:gap-3">
