@@ -1,5 +1,5 @@
 
-# AI-Powered Chatbot
+# Labmentix AI-Powered Chatbot
 
 The goal of this project is to build a fully functional AI-powered chatbot that can communicate with users in real-time. The chatbot will utilize an AI model (such as OpenAI’s GPT API) to generate responses. The application will have a user-friendly frontend built with Next.js and Tailwind CSS, while the backend will be developed using Node.js, Express.js, and MongoDB for data storage.
 
